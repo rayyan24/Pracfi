@@ -17,7 +17,8 @@ class FileGenerator:
 
     def getExtention(self) -> None:
         self.extension = input("Enter Files Extention: ")        
-
+    def clearScreen(self) -> None:
+        os.system("cls")
     def generateFileList(self) -> None:
         res=True
         baseFileName = os.path.basename(__file__)
@@ -33,34 +34,24 @@ class FileGenerator:
 
     def getScreenshot(self) -> None:
         auto.hotkey("winleft", "shiftleft", "s")
-        time.sleep(6)
+        input()
         screenshot = ImageGrab.grabclipboard()
+        screenshot.save("image.png")
         try:
-            screenshot.save("image.png")
+            pass
         except Exception:
-            print("An I/O Error Occoured Please Restart The Process")
+            print("An I/O Error Occoured at getScreenshot Please Restart The Process")
 
     def runPythonCode(self, fileName) -> None:
-        os.system(f"start")
-        time.sleep(1)
-        auto.click()
-        auto.write(f"python {fileName}", interval=0.15)
-        auto.press("enter")
+        self.clearScreen()
+        os.system(f"python {fileName}")
         self.getScreenshot()
-        auto.write(f"exit")
-        auto.press("enter")
     def runCppCode(self,fileName) -> None:
-        os.system(f"start")
-        time.sleep(1)
-        auto.click()
-        auto.write(f"g++ {fileName} -o {fileName}.exe", interval=0.04)
-        auto.press("enter")
-        auto.write(f"{fileName}.exe", interval=0.04)
-        auto.press("enter")
-        time.sleep(0.5)
+        self.clearScreen()
+        os.system(f"g++ {fileName} -o {fileName}.exe")
+        os.system(f"{fileName}.exe")
         self.getScreenshot()
-        auto.write(f"exit")
-        auto.press("enter")
+
 
     def runCode(self) -> None:
         pass
@@ -89,10 +80,11 @@ class FileGenerator:
         if not self.generateFileList():
             return
         self.runCode=self.Map[self.extension]
+        self.generate()
         try:
-            self.generate()
+            pass
         except Exception:
-            print("An I/O Error Occoured Please Restart The Process")
+            print("An I/O Error Occoured at generate Please Restart The Process")
         time.sleep(1)
         os.remove("image.png")
         self.outputFileName = input("Enter Output File Name: ")
