@@ -1,8 +1,7 @@
 import os
 import pyautogui as auto
-import time
-
 from PIL import ImageGrab
+import time
 from docx.shared import Inches
 from docx import Document
 
@@ -13,14 +12,24 @@ class FileGenerator:
         self.extension = ""
         self.fileList = []
         self.outputFileName = ""
+        self.Map={"py":self.runPythonCode,"cpp":self.runCppCode,"java":self.runJavaCode}
+
 
     def getExtention(self) -> None:
-        self.extension = input("Enter Files Extention: ")
+        self.extension = input("Enter Files Extention: ")        
 
     def generateFileList(self) -> None:
+        res=True
         baseFileName = os.path.basename(__file__)
         self.fileList = [file for file in os.listdir() if file.endswith(
             self.extension) and file != baseFileName]
+        if self.extension not in self.Map:
+            print(f"{self.extension} is not supported")
+            res=False
+        if len(self.fileList)==0:
+            print(f"{self.extension} files not found")
+            res=False
+        return res
 
     def getScreenshot(self) -> None:
         auto.hotkey("winleft", "shiftleft", "s")
@@ -31,18 +40,32 @@ class FileGenerator:
         except Exception:
             print("An I/O Error Occoured Please Restart The Process")
 
-    def runCode(self, fileName) -> None:
+    def runPythonCode(self, fileName) -> None:
         os.system(f"start")
         time.sleep(1)
         auto.click()
         auto.write(f"python {fileName}", interval=0.15)
         auto.press("enter")
         self.getScreenshot()
-        # time.sleep(2.5)
         auto.write(f"exit")
         auto.press("enter")
+    def runCppCode(self,fileName) -> None:
+        os.system(f"start")
         time.sleep(1)
+        auto.click()
+        auto.write(f"g++ {fileName} -o {fileName}.exe", interval=0.04)
+        auto.press("enter")
+        auto.write(f"{fileName}.exe", interval=0.04)
+        auto.press("enter")
+        time.sleep(0.5)
+        self.getScreenshot()
+        auto.write(f"exit")
+        auto.press("enter")
 
+    def runCode(self) -> None:
+        pass
+    def runJavaCode(self,fileName) -> None:
+        print("JAVA CODE")
     def getQuestion(self, questionText) -> str:
         for index, char in enumerate(questionText.lower()):
             if 97 <= ord(char) <= 122:
@@ -60,14 +83,18 @@ class FileGenerator:
                 self.document.add_picture(
                     "image.png", width=Inches(5.23), height=Inches(2.3))
 
-    def main(self) -> None:
+        
+    def start(self) -> None:
         self.getExtention()
-        self.generateFileList()
+        if not self.generateFileList():
+            return
+        self.runCode=self.Map[self.extension]
         try:
             self.generate()
         except Exception:
             print("An I/O Error Occoured Please Restart The Process")
         time.sleep(1)
+        os.remove("image.png")
         self.outputFileName = input("Enter Output File Name: ")
         self.outputFileName += ".docx"
         self.document.save(self.outputFileName)
@@ -75,7 +102,7 @@ class FileGenerator:
 
 def main() -> None:
     object = FileGenerator()
-    object.main()
+    object.start()
 
 
 if __name__ == "__main__":
