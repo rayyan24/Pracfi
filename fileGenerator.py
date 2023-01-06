@@ -12,24 +12,30 @@ class FileGenerator:
         self.extension = ""
         self.fileList = []
         self.outputFileName = ""
-        self.Map={"py":self.runPythonCode,"cpp":self.runCppCode,"java":self.runJavaCode}
-
+        self.Map = {"py": self.runPythonCode,
+                    "cpp": self.runCppCode, "java": self.runJavaCode}
+        self.questionNum=1
+        self.ignoreList=set()
 
     def getExtention(self) -> None:
-        self.extension = input("Enter Files Extention: ")        
+        if self.extension=="":
+            self.extension = input("Enter Files Extention: ")
+
     def clearScreen(self) -> None:
         os.system("cls")
+
     def generateFileList(self) -> None:
-        res=True
+        res = True
         baseFileName = os.path.basename(__file__)
-        self.fileList = [file for file in os.listdir() if file.endswith(
-            self.extension) and file != baseFileName]
+        self.ignoreList.add(baseFileName)
+
+        self.fileList = [file for file in os.listdir() if file.endswith(self.extension) and file not in self.ignoreList]
         if self.extension not in self.Map:
             print(f"{self.extension} is not supported")
-            res=False
-        if len(self.fileList)==0:
+            res = False
+        if len(self.fileList) == 0:
             print(f"{self.extension} files not found")
-            res=False
+            res = False
         return res
 
     def getScreenshot(self) -> None:
@@ -46,17 +52,19 @@ class FileGenerator:
         self.clearScreen()
         os.system(f"python {fileName}")
         self.getScreenshot()
-    def runCppCode(self,fileName) -> None:
+
+    def runCppCode(self, fileName) -> None:
         self.clearScreen()
         os.system(f"g++ {fileName} -o {fileName}.exe")
         os.system(f"{fileName}.exe")
         self.getScreenshot()
 
-
     def runCode(self) -> None:
         pass
-    def runJavaCode(self,fileName) -> None:
+
+    def runJavaCode(self, fileName) -> None:
         print("JAVA CODE")
+
     def getQuestion(self, questionText) -> str:
         for index, char in enumerate(questionText.lower()):
             if 97 <= ord(char) <= 122:
@@ -69,17 +77,20 @@ class FileGenerator:
                 code = file.read()
                 self.runCode(file.name)
                 time.sleep(1)
-                self.document.add_heading(str(question))
+                self.document.add_heading(f"{self.questionNum}. {question}")
                 self.document.add_paragraph(code)
                 self.document.add_picture(
                     "image.png", width=Inches(5.23), height=Inches(2.3))
-
-        
+                self.questionNum+=1
+    def getOutputFileName(self):
+        if self.outputFileName=="":
+            self.outputFileName = input("Enter Output File Name: ")
+        self.outputFileName += ".docx"
     def start(self) -> None:
         self.getExtention()
         if not self.generateFileList():
             return
-        self.runCode=self.Map[self.extension]
+        self.runCode = self.Map[self.extension]
         self.generate()
         try:
             pass
@@ -87,8 +98,7 @@ class FileGenerator:
             print("An I/O Error Occoured at generate Please Restart The Process")
         time.sleep(1)
         os.remove("image.png")
-        self.outputFileName = input("Enter Output File Name: ")
-        self.outputFileName += ".docx"
+        self.getOutputFileName()
         self.document.save(self.outputFileName)
 
 
