@@ -4,7 +4,7 @@ from PIL import ImageGrab
 import time
 from docx.shared import Inches
 from docx import Document
-
+from docx2pdf import convert
 
 class FileGenerator:
     def __init__(self) -> None:
@@ -16,6 +16,7 @@ class FileGenerator:
                     "cpp": self.runCppCode, "java": self.runJavaCode}
         self.questionNum=1
         self.ignoreList=set()
+        self.pdfFileName=""
 
     def getExtention(self) -> None:
         if self.extension=="":
@@ -59,11 +60,16 @@ class FileGenerator:
         os.system(f"{fileName}.exe")
         self.getScreenshot()
 
+    def runJavaCode(self, fileName) -> None:
+        nameWithoutExtention=fileName.removesuffix(".java")
+        self.clearScreen()
+        os.system(f"javac {fileName}")
+        os.system(f"java {nameWithoutExtention}")
+        self.getScreenshot()
     def runCode(self) -> None:
         pass
 
-    def runJavaCode(self, fileName) -> None:
-        print("JAVA CODE")
+
 
     def getQuestion(self, questionText) -> str:
         for index, char in enumerate(questionText.lower()):
@@ -86,6 +92,7 @@ class FileGenerator:
         if self.outputFileName=="":
             self.outputFileName = input("Enter Output File Name: ")
         self.outputFileName += ".docx"
+        self.pdfFileName=self.outputFileName.removesuffix(".docx")+".pdf"
     def start(self) -> None:
         self.getExtention()
         if not self.generateFileList():
@@ -100,12 +107,13 @@ class FileGenerator:
         os.remove("image.png")
         self.getOutputFileName()
         self.document.save(self.outputFileName)
-
+        time.sleep(3)
+        convert(self.outputFileName,self.pdfFileName)
+        os.system(self.pdfFileName)
 
 def main() -> None:
     object = FileGenerator()
     object.start()
-
 
 if __name__ == "__main__":
     main()
