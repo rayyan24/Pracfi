@@ -69,8 +69,6 @@ class FileGenerator:
     def runCode(self) -> None:
         pass
 
-
-
     def getQuestion(self, questionText) -> str:
         for index, char in enumerate(questionText.lower()):
             if 97 <= ord(char) <= 122:
