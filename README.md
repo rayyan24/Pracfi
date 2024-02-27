@@ -14,4 +14,18 @@ Pracfi is a user-friendly application designed to streamline the process of crea
 - **Streamlined Documentation Workflow:** Ideal for producing documentation or lessons containing code and graphical illustrations.
 - **Use Cases:** Suitable for students, educators, and software developers seeking to create interactive documents or automate documentation processes for software projects.
 
-Pracfi empowers users to efficiently create engaging and informative documents by combining code and visual representations of its execution results. Whether for educational purposes or software project documentation, Pracfi offers a convenient solution for producing comprehensive documentation with ease and efficiency.
+
+### Run the following commands to start using Pracfi
+Installs all the dependencies
+```console
+python setup.py
+```
+
+Start the application
+
+```console
+python Pracfi.py
+```
+##### For Linux Systems use python3 instead of python in the above commands
+
+![Pracfi UI](image.png)
