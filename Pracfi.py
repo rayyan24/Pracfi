@@ -69,8 +69,6 @@ class FileGenerator:
         os.system("rm image.png") if self.questionNum>1 else print(end="")
         os.system("scrot -s -f 'image.png'")
         input()
-        # screenshot = ImageGrab.grabclipboard()
-        # screenshot.save("image.png")
 
     def convertToPDF(self):
         if self.os == "Windows":
@@ -88,9 +86,6 @@ class FileGenerator:
         self.getScreenshot()
 
     def runCppCode(self, fileName) -> None:
-        # os.system(f"g++ \"{fileName}\" -o \"{fileName}\".exe")
-        # os.system(f"\"{fileName}\".exe")
-        # self.getScreenshot()
         self.clearScreen()
         if self.os == "Windows":
             os.system(f"g++ \"{fileName}\" -o \"{fileName}\".exe")
@@ -172,7 +167,6 @@ class Pracfi(tk.Tk):
         super(Pracfi, self).__init__()
         self.title("Pracfi")
         self.minsize(400, 300)
-        # self.maxsize(300, 300)
         self.startButton = tk.Button()
         self.outFileLabel = tk.Label()
         self.outFileInput = tk.Entry()
